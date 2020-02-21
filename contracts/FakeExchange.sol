@@ -55,6 +55,10 @@ contract FakeExchange is Ownable {
         msg.sender.transfer(price - fee); //pay seller
         emit CoinBought(msg.sender,qty,price);
     }
+    
+    function balance () public view onlyOwner returns (uint){
+        return address(this).balance;
+    }
 
 
 }

@@ -8,23 +8,23 @@ contract FakeCoin is ERC20{
     address owner;
     string public constant name = 'FakeCoin';
     string public constant symbol = 'FC';
-    uint256 private _totalSupply;
-    
-    mapping (address => uint256) private _balances;
-    mapping (address => mapping (address => uint256)) private _allowances;
+    uint8 public decimals = 0;
+    uint public constant INITIAL_SUPPLY = 20000000;
 
     constructor () public {
         owner = msg.sender;
         //create initial token offer
-        _mint(address(this), 2100000000);
+        _mint(address(this), INITIAL_SUPPLY);
     }
     
-    function _approve(address tokenOwner, address spender, uint256 amount) internal override {
-        require(tokenOwner != address(0), "ERC20: approve from the zero address");
-        require(spender != address(0), "ERC20: approve to the zero address");
-
-        _allowances[tokenOwner][spender] = amount;
-        emit Approval(tokenOwner, spender, amount);
+    function approve(address spender, uint256 amount) public override returns (bool) {
+        _approve(address(this), spender, amount);
+        return true;
+    }
+    
+    function deposit(uint qty) public {
+        require(msg.sender == owner, "address not authorized");
+        msg.sender.transfer(qty);
     }
 
 }
