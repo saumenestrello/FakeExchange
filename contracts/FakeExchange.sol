@@ -17,48 +17,91 @@ contract ERC20 {
 contract FakeExchange is Ownable {
     
     ERC20 stub;
-    uint fee = 100;
+    uint fee;
 
-    event CoinSold(address customer,uint qty,uint price);
-    event CoinBought(address seller, uint qty, uint price);
+    event TokenSold(address customer,uint qty,uint price);
+    event TokenBought(address seller, uint qty, uint price);
+    event TokenAddressChanged(string tokenID, string addressType, address newAddress);
+    event TokenDeleted(string tokenID);
+    event FeeChanged(uint newValue);
+    
+    constructor () public {
+        fee = 100;
+        emit FeeChanged(100);
+    }
     
     struct Token {
-        address addr;
-        uint price;
+        string id;
+        address tokenAddress;
+        address bankAddress;
+        address payAddress;
         bool supported;
     }
 
     mapping(string => Token) supportedCoins;
 
-    function addCoin(address contractAddr, string memory symbol, uint price) onlyOwner public {
-        require(supportedCoins[symbol].supported == false, "coin already supported");
-        supportedCoins[symbol] = Token(contractAddr,price,true);
+    function addToken(string memory id,address tokenAddr,address bankAddr,address payAddr) onlyOwner public {
+        require(supportedCoins[id].supported == false, "coin already supported");
+        supportedCoins[id] = Token(id,tokenAddr,bankAddr,payAddr,true);
+    }
+    
+    function removeToken(string memory id) public onlyOwner {
+        supportedCoins[id].supported = false;
+        emit TokenDeleted(id);
+    }
+    
+    function setBankAddr(string memory id,address bankAddr) public onlyOwner {
+        supportedCoins[id].bankAddress = bankAddr;
+        emit TokenAddressChanged(id, "BANK", bankAddr);
+    }
+    
+    function setPayAddr(string memory id,address payAddr) public onlyOwner {
+        supportedCoins[id].payAddress = payAddr;
+        emit TokenAddressChanged(id, "PAY", payAddr);
+    }
+    
+    function setFee(uint newFee) public onlyOwner {
+        fee = newFee;
+        emit FeeChanged(newFee);
+    }
+    
+    function getFee() public view returns (uint) {
+        return fee;
+    }
+    
+    function getPrice(string memory id) internal returns(uint256){
+        return 100;
     }
 
-    function buy(string memory symbol, uint qty) payable public {
-        require(supportedCoins[symbol].supported == true, "coin not supported"); //check if this coin is supported
-        require(msg.value >= qty * supportedCoins[symbol].price, "not enough ETH supplied"); //check if supplied ETH is enough
-        stub = ERC20(supportedCoins[symbol].addr);
-        bool result = stub.transferFrom(supportedCoins[symbol].addr,msg.sender,qty);
+    function buy(string memory id, uint qty) payable public {
+        require(supportedCoins[id].supported == true, "coin not supported"); //check if this coin is supported
+        require(msg.value >= qty * getPrice(id), "not enough ETH supplied"); //check if supplied ETH is enough
+        stub = ERC20(supportedCoins[id].tokenAddress);
+        bool result = stub.transferFrom(supportedCoins[id].bankAddress,msg.sender,qty);
         require(result == true); //check that token transfer has been successful
-        msg.sender.transfer(msg.value - fee); //pay token contract and get fee
-        emit CoinSold(msg.sender,qty,msg.value);
+        supportedCoins[id].payAddress.transfer(msg.value - fee); //pay token contract and get fee
+        emit TokenSold(msg.sender,qty,msg.value);
     }
 
-    function sell(string memory symbol, uint qty) public {
-        require(supportedCoins[symbol].supported == true, "coin not supported"); //check if this coin is supported
-        require(address(this).balance >= qty * supportedCoins[symbol].price); //check if this contract has enough ETH to buy
-        stub = ERC20(supportedCoins[symbol].addr);
+    function sell(string memory id, uint qty) public {
+        require(supportedCoins[id].supported == true, "coin not supported"); //check if this coin is supported
+        require(address(this).balance >= qty * getPrice(id)); //check if this contract has enough ETH to buy
+        stub = ERC20(supportedCoins[id].tokenAddress);
         bool result = stub.transferFrom(msg.sender,address(this),qty);
         require(result == true); //check that token transfer has been successful
-        uint price = qty * supportedCoins[symbol].price;
+        uint price = qty * getPrice(id);
         msg.sender.transfer(price - fee); //pay seller
-        emit CoinBought(msg.sender,qty,price);
+        emit TokenBought(msg.sender,qty,price);
     }
     
     function balance () public view onlyOwner returns (uint){
         return address(this).balance;
     }
+    
+    
+    receive() external payable {}
+    
+    fallback() external payable {}
 
 
 }
