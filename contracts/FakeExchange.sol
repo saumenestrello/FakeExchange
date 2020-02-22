@@ -1,6 +1,7 @@
 pragma solidity ^0.6.0;
 
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/ownership/Ownable.sol";
+//import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/ownership/Ownable.sol";
+import "../lib/openzeppelin/contracts/ownership/Ownable.sol";
 
 contract ERC20 {
 
@@ -34,13 +35,13 @@ contract FakeExchange is Ownable {
         string id;
         address tokenAddress;
         address bankAddress;
-        address payAddress;
+        address payable payAddress;
         bool supported;
     }
 
     mapping(string => Token) supportedCoins;
 
-    function addToken(string memory id,address tokenAddr,address bankAddr,address payAddr) onlyOwner public {
+    function addToken(string memory id,address tokenAddr,address bankAddr,address payable payAddr) onlyOwner public {
         require(supportedCoins[id].supported == false, "coin already supported");
         supportedCoins[id] = Token(id,tokenAddr,bankAddr,payAddr,true);
     }
@@ -55,7 +56,7 @@ contract FakeExchange is Ownable {
         emit TokenAddressChanged(id, "BANK", bankAddr);
     }
     
-    function setPayAddr(string memory id,address payAddr) public onlyOwner {
+    function setPayAddr(string memory id,address payable payAddr) public onlyOwner {
         supportedCoins[id].payAddress = payAddr;
         emit TokenAddressChanged(id, "PAY", payAddr);
     }
