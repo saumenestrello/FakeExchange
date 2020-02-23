@@ -6,8 +6,7 @@ App = {
   contracts: {},
   binstance : null,
   account: '0x0',
-  wsURL : 'http://192.168.1.173:8080/batch/get',
-  ethURL : 'http://192.168.1.173:7545',
+  ethURL : 'http://1227.0.0.1:7545',
 
   init: function () {
     return App.initWeb3();
@@ -42,22 +41,12 @@ App = {
   },
 
   render: function () {
-    var loader = $("#loader");
-    var content = $("#content");
-
-    var proofs = $("#proofs");
-    proofs.empty();
-    var proofTemplate = '<tr><td align="center" colspan="7">No data</td></tr>';
-    proofs.append(proofTemplate);
-
-    loader.show();
-    content.hide();
 
     // Load account data
     web3.eth.getCoinbase(function (err, account) {
       if (err === null) {
         App.account = account;
-        $("#accountAddress").html("Your Account: " + account);
+        $("#address").attr('value', account);
       }
     });
 
@@ -69,99 +58,35 @@ App = {
 
       return App.bInstance;
     }).then(function () {
-
-      loader.hide();
-      content.show();
     }).catch(function (error) {
       console.warn(error);
     });
   }
+  
 };
 
-function loadBatchProofs(data){
+function buyToken(){
 
-  var proofs = $("#proofs");
-  proofs.empty();
+  var id = $('token').val();
+  var qty = parseInt($('qty').val());
 
-  if(data === ''){
-    alert('The required batch does not exist');
-    var proofs = $("#proofs");
-    proofs.empty();
-    var proofTemplate = '<tr><td align="center" colspan="7">No data</td></tr>';
-    proofs.append(proofTemplate);
-    return;
-  }
-
-  var obj = JSON.parse(data);
-
-  var batch = obj.batch;
-  var ckps = [];
-  ckps = obj.list;
-
-  for (var i = 0; i < ckps.length; i++) {
-
-    var id = ckps[i].id;
-    var timestamp = ckps[i].timestamp;
-    var type = ckps[i].type;
-    var place = ckps[i].place;
-    var material = ckps[i].material;
-    //var hash = ckps[i].hash;
+  App.bInstance.buy(id, qty).then(function (res) {
+    alert("Action completed successfully");
     
-    var dataString = batch + type + place + material + timestamp;
-    var hash = doHash(dataString);
+}).catch(function (err) {alert(err)});}
 
-    var bcProof = App.bInstance.getProofHash(batch, id).then(function (res) {
+function sellToken(){
 
-      if (res == hash) {
-        var proofTemplate = "<tr><th>" + id + "</th><td>"  + timestamp + "</td><td>" + place + "</td> <td>" + type + "</td> <td>" + hash + "</td> <td>" + res + "</td><td><img class=status-img src=images/ok.png /></td></tr>";
-        proofs.append(proofTemplate);
-      } else {
-        var proofTemplate = "<tr><th>" + id + "</th><td>"  + timestamp + "</td><td>" + place + "</td> <td>" + type + "</td> <td>" + hash + "</td> <td>" + res + "</td><td><img class=status-img src=images/ko.png /></td></tr>";
-        proofs.append(proofTemplate);
-      }
+  var id = $('token').val();
+  var qty = parseInt($('qty').val());
 
-    });
-
-  }
-
-}
-
-function loadData(){
-
-  var url = App.wsURL;
-  var batchId = $("#batch").val();
-  var param = 'data=' + parseInt(batchId);
-
-
-  $.ajax({
-
-    'url' : url,
-    'type' : 'GET',
-    'contentType' : 'application/x-www-form-urlencoded',
-    'data' : param,
-    'success' : function(data) {              
-        loadBatchProofs(data);
-    },
-    'error' : function(request,error)
-    {
-        alert('A communication error occured: can\'t retrieve batch infos');
-        var proofs = $("#proofs");
-        proofs.empty();
-        var proofTemplate = '<tr><td align="center" colspan="7">No data</td></tr>';
-        proofs.append(proofTemplate);
-    }
-});
-
-}
-
-function doHash(str){
-  const CryptoJS = require('crypto-js');
-  var hash = CryptoJS.SHA256(str);
-  return hash.toString();
-}
+  App.bInstance.buy(id, qty).then(function (res) {
+    alert("Action completed successfully");
+    
+}).catch(function (err) {alert(err)});}
 
 $(function () {
-  $(window).load(function () {
+  //$(window).load(function () {
     App.init();
-  });
+  //});
 });
