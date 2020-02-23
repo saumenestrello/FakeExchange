@@ -67,23 +67,69 @@ App = {
 
 function buyToken(){
 
-  var id = $('token').val();
-  var qty = parseInt($('qty').val());
+  var id = $('#token').val();
 
-  App.bInstance.buy(id, qty).then(function (res) {
-    alert("Action completed successfully");
-    
-}).catch(function (err) {alert(err)});}
+  if(id == "-"){
+    alert('token not selected!')
+    return;
+  }
+
+  var qty = parseInt($('#qty').val());
+
+  if(qty == "" || parseInt(qty) == 0){
+    alert('insert quantity!')
+    return;
+  } else {
+    qty = parseInt(qty);
+  }
+
+  var price = getPrice(id) * qty;
+
+  App.bInstance.buy.sendTransaction(id,qty,
+    {
+     from:   App.account,
+     value: price,
+    })
+    .then(function(res){
+      alert(res);
+    });
+}
+
+function getPrice(id){
+  switch(id){
+    case 'FC':
+    return 100;
+  }
+}
 
 function sellToken(){
 
-  var id = $('token').val();
-  var qty = parseInt($('qty').val());
+  var id = $('#token').val();
 
-  App.bInstance.buy(id, qty).then(function (res) {
-    alert("Action completed successfully");
-    
-}).catch(function (err) {alert(err)});}
+  if(id == "-"){
+    alert('token not selected!')
+    return;
+  }
+
+  var qty = parseInt($('#qty').val());
+
+  if(qty == "" || parseInt(qty) == 0){
+    alert('insert quantity!')
+    return;
+  } else {
+    qty = parseInt(qty);
+  }
+
+  var price = getPrice(id) * qty;
+
+  App.bInstance.sell.sendTransaction(id,qty,{
+    from:   App.account,
+   })
+    .then(function(res){
+      alert(res);
+    });  
+
+}
 
 $(function () {
   //$(window).load(function () {
