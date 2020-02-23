@@ -7,15 +7,15 @@
       "type": "constructor"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.6.0+commit.26b70077\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/Tommaso/Desktop/FakeExchange/contracts/openzeppelin/contracts/GSN/Context.sol\":\"Context\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/Tommaso/Desktop/FakeExchange/contracts/openzeppelin/contracts/GSN/Context.sol\":{\"keccak256\":\"0x0de74dfa6b37943c1b834cbd8fb7a8d052e5ff80c7adb33692102dd6cd2985e9\",\"urls\":[\"bzz-raw://9d2d827fcf4a838f5821732c0acd6a40d21c2a5a2cfe2563feec91465f47bb60\",\"dweb:/ipfs/Qmex3wMKf5Sghbfvr288RUg1kP2uAyTMf11w83WbMbpQQc\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.6.0+commit.26b70077\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/Tommaso/Desktop/FakeExchange/lib/openzeppelin/contracts/GSN/Context.sol\":\"Context\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/Tommaso/Desktop/FakeExchange/lib/openzeppelin/contracts/GSN/Context.sol\":{\"keccak256\":\"0x0de74dfa6b37943c1b834cbd8fb7a8d052e5ff80c7adb33692102dd6cd2985e9\",\"urls\":[\"bzz-raw://9d2d827fcf4a838f5821732c0acd6a40d21c2a5a2cfe2563feec91465f47bb60\",\"dweb:/ipfs/Qmex3wMKf5Sghbfvr288RUg1kP2uAyTMf11w83WbMbpQQc\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "pragma solidity ^0.6.0;\n\n/*\n * @dev Provides information about the current execution context, including the\n * sender of the transaction and its data. While these are generally available\n * via msg.sender and msg.data, they should not be accessed in such a direct\n * manner, since when dealing with GSN meta-transactions the account sending and\n * paying for execution may not be the actual sender (as far as an application\n * is concerned).\n *\n * This contract is only required for intermediate, library-like contracts.\n */\ncontract Context {\n    // Empty internal constructor, to prevent people from mistakenly deploying\n    // an instance of this contract, which should be used via inheritance.\n    constructor () internal { }\n\n    function _msgSender() internal view virtual returns (address payable) {\n        return msg.sender;\n    }\n\n    function _msgData() internal view virtual returns (bytes memory) {\n        this; // silence state mutability warning without generating bytecode - see https://github.com/ethereum/solidity/issues/2691\n        return msg.data;\n    }\n}\n",
-  "sourcePath": "/Users/Tommaso/Desktop/FakeExchange/contracts/openzeppelin/contracts/GSN/Context.sol",
+  "sourcePath": "/Users/Tommaso/Desktop/FakeExchange/lib/openzeppelin/contracts/GSN/Context.sol",
   "ast": {
-    "absolutePath": "/Users/Tommaso/Desktop/FakeExchange/contracts/openzeppelin/contracts/GSN/Context.sol",
+    "absolutePath": "/Users/Tommaso/Desktop/FakeExchange/lib/openzeppelin/contracts/GSN/Context.sol",
     "exportedSymbols": {
       "Context": [
         573
@@ -97,7 +97,7 @@
                       "name": "msg",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 11948,
+                      "referencedDeclaration": 1419,
                       "src": "822:3:3",
                       "typeDescriptions": {
                         "typeIdentifier": "t_magic_message",
@@ -193,7 +193,7 @@
                     "name": "this",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 11962,
+                    "referencedDeclaration": 1433,
                     "src": "920:4:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_Context_$573",
@@ -213,7 +213,7 @@
                       "name": "msg",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 11948,
+                      "referencedDeclaration": 1419,
                       "src": "1060:3:3",
                       "typeDescriptions": {
                         "typeIdentifier": "t_magic_message",
@@ -303,7 +303,7 @@
     "src": "0:1078:3"
   },
   "legacyAST": {
-    "absolutePath": "/Users/Tommaso/Desktop/FakeExchange/contracts/openzeppelin/contracts/GSN/Context.sol",
+    "absolutePath": "/Users/Tommaso/Desktop/FakeExchange/lib/openzeppelin/contracts/GSN/Context.sol",
     "exportedSymbols": {
       "Context": [
         573
@@ -385,7 +385,7 @@
                       "name": "msg",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 11948,
+                      "referencedDeclaration": 1419,
                       "src": "822:3:3",
                       "typeDescriptions": {
                         "typeIdentifier": "t_magic_message",
@@ -481,7 +481,7 @@
                     "name": "this",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 11962,
+                    "referencedDeclaration": 1433,
                     "src": "920:4:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_contract$_Context_$573",
@@ -501,7 +501,7 @@
                       "name": "msg",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 11948,
+                      "referencedDeclaration": 1419,
                       "src": "1060:3:3",
                       "typeDescriptions": {
                         "typeIdentifier": "t_magic_message",
@@ -596,7 +596,7 @@
   },
   "networks": {},
   "schemaVersion": "3.0.23",
-  "updatedAt": "2020-02-22T23:31:12.439Z",
+  "updatedAt": "2020-02-23T10:28:14.970Z",
   "devdoc": {
     "methods": {}
   },

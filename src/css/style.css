@@ -1,0 +1,23 @@
+html{
+	width: 100%;
+	height: 100%;
+}
+
+body{
+	width: 100%;
+	height: 100%;
+	background-color:#dadbdc;
+}
+
+.main-row, .main-container {
+	height:100%;
+}
+
+.main-panel {
+	background-color:white;
+	width: 40rem;
+	height:30rem;
+	border-radius: 5px;
+}
+
+
