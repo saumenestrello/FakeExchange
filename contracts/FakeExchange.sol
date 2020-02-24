@@ -91,7 +91,7 @@ contract FakeExchange is Ownable {
         bool result = stub.transferFrom(msg.sender,address(this),qty);
         require(result == true, "token transfer failed"); //check that token transfer has been successful
         uint price = qty * getPrice(id);
-        msg.sender.call.value(price - fee)(""); //pay seller
+        msg.sender.transfer(price - fee); //pay seller
         emit TokenBought(msg.sender,qty,price);
     }
     
