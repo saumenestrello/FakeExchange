@@ -86,12 +86,12 @@ contract FakeExchange is Ownable {
 
     function sell(string memory id, uint qty) public {
         require(supportedCoins[id].supported == true, "coin not supported"); //check if this coin is supported
-        require(address(this).balance >= qty * getPrice(id)); //check if this contract has enough ETH to buy
+        require(address(this).balance >= qty * getPrice(id),"contract hasn't enough ETH"); //check if this contract has enough ETH to buy
         stub = ERC20(supportedCoins[id].tokenAddress);
         bool result = stub.transferFrom(msg.sender,address(this),qty);
-        require(result == true); //check that token transfer has been successful
+        require(result == true, "token transfer failed"); //check that token transfer has been successful
         uint price = qty * getPrice(id);
-        msg.sender.transfer(price - fee); //pay seller
+        msg.sender.call.value(price - fee)(""); //pay seller
         emit TokenBought(msg.sender,qty,price);
     }
     

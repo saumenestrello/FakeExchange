@@ -1,7 +1,7 @@
 pragma solidity ^0.6.0;
 
 //import "http://github.com/OpenZeppelin/openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
- import "../lib/openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "../lib/openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract FakeCoin is ERC20{
     

@@ -6,9 +6,10 @@ App = {
   contracts: {},
   binstance : null,
   account: '0x0',
-  ethURL : 'http://1227.0.0.1:7545',
+  ethURL : 'http://127.0.0.1:7545',
 
   init: function () {
+
     return App.initWeb3();
   },
 
@@ -38,6 +39,21 @@ App = {
 
       return App.render();
     });
+
+    $('#token').on('change', function(e){
+      var id = this.value;
+      var abi = getABI(id);
+
+      $.getJSON(abi, function (token) {
+        // Instantiate a new truffle contract from the artifact
+        App.contracts.Token = TruffleContract(token);
+        // Connect provider to interact with contract
+        App.contracts.Token.setProvider(App.web3Provider);
+
+        return App.loadCoinData();
+      });
+
+    });
   },
 
   render: function () {
@@ -57,6 +73,20 @@ App = {
       console.log(instance);
 
       return App.bInstance;
+    }).then(function () {
+    }).catch(function (error) {
+      console.warn(error);
+    });
+
+  },
+
+  loadCoinData : function(){
+    App.contracts.Token.deployed().then(function (instance) {
+
+      App.cInstance = instance;
+      console.log(instance);
+
+      return App.cInstance;
     }).then(function () {
     }).catch(function (error) {
       console.warn(error);
@@ -92,7 +122,11 @@ function buyToken(){
     })
     .then(function(res){
       alert(res);
-    });
+    })
+    .catch(function(err){
+      alert('Operazione fallita: si è verificato un errore (ERRCODE ' + err.code + ')');
+    })
+;
 }
 
 function getPrice(id){
@@ -120,14 +154,36 @@ function sellToken(){
     qty = parseInt(qty);
   }
 
-  var price = getPrice(id) * qty;
-
-  App.bInstance.sell.sendTransaction(id,qty,{
+  App.cInstance.approve.sendTransaction(App.bInstance.address, qty, {
     from:   App.account,
    })
-    .then(function(res){
-      alert(res);
-    });  
+   .then( res =>
+    {
+    var price = getPrice(id) * qty;
+
+    App.bInstance.sell.sendTransaction(id,qty,{
+      from:   App.account,
+    })
+      .then(function(res){
+        alert(res);
+      }) 
+      .catch(function(err){
+        alert('Operazione fallita: si è verificato un errore (ERRCODE ' + err.code + ')');
+      });
+    }
+   )
+   .catch(function(err){
+    alert('Operazione fallita: si è verificato un errore (ERRCODE ' + err.code + ')');
+  });
+     
+
+}
+
+function getABI(id){
+  switch(id){
+    case 'FC': 
+      return 'FakeCoin.json';
+  }
 
 }
 
