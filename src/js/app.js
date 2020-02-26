@@ -27,6 +27,7 @@ App = {
       ethereum.enable();
       web3 = new Web3(App.web3Provider);
     }
+
     return App.initContract();
   },
 
@@ -40,20 +41,6 @@ App = {
       return App.render();
     });
 
-    $('#token').on('change', function(e){
-      var id = this.value;
-      var abi = getABI(id);
-
-      $.getJSON(abi, function (token) {
-        // Instantiate a new truffle contract from the artifact
-        App.contracts.Token = TruffleContract(token);
-        // Connect provider to interact with contract
-        App.contracts.Token.setProvider(App.web3Provider);
-
-        return App.loadCoinData();
-      });
-
-    });
   },
 
   render: function () {
@@ -62,6 +49,7 @@ App = {
     web3.eth.getCoinbase(function (err, account) {
       if (err === null) {
         App.account = account;
+       // web3.eth.defaultAccount = account;
         $("#address").attr('value', account);
       }
     });
@@ -72,6 +60,8 @@ App = {
       App.bInstance = instance;
       console.log(instance);
 
+      App.prepareCoinContract();
+
       return App.bInstance;
     }).then(function () {
     }).catch(function (error) {
@@ -80,17 +70,34 @@ App = {
 
   },
 
-  loadCoinData : function(){
-    App.contracts.Token.deployed().then(function (instance) {
+  prepareCoinContract : function(){
+    
+    $('#token').on('change', function(e){
+      
+      var id = this.value;
 
-      App.cInstance = instance;
-      console.log(instance);
+      if(App.bInstance != null && id != '-'){
+      App.bInstance.getTokenAddr(id,
+        {
+         from:   App.account  
+        })
+        .then(function(addr){
 
-      return App.cInstance;
-    }).then(function () {
-    }).catch(function (error) {
-      console.warn(error);
+          $.getJSON("ERC20.json", function (token) {
+            
+            App.contracts.Coin = web3.eth.contract(token.abi);
+            App.cInstance = App.contracts.Coin.at(addr);
+            console.log(App.contracts.cInstance);
+            //web3.setProvider(App.web3Provider);
+            return App.contracts.cInstance;
+          });
+        })
+        .catch(function(err){
+          alert('Operazione fallita: si è verificato un errore (ERRCODE ' + err.code + ')');
+        });
+      }
     });
+
   }
   
 };
@@ -154,38 +161,26 @@ function sellToken(){
     qty = parseInt(qty);
   }
 
-  App.cInstance.approve.sendTransaction(App.bInstance.address, qty, {
+  App.cInstance.approve(App.bInstance.address, qty, {
     from:   App.account,
-   })
-   .then( res =>
+   }, 
+   function(res){
     {
-    var price = getPrice(id) * qty;
+      var price = getPrice(id) * qty;
 
-    App.bInstance.sell.sendTransaction(id,qty,{
-      from:   App.account,
+      App.bInstance.sell(id,qty,{
+        from:   App.account,
+      })
+        .then(function(res){
+          alert(res);
+        }) 
+        .catch(function(err){
+          alert('Operazione fallita: si è verificato un errore (ERRCODE ' + err.code + ')');
+        });
+      }
     })
-      .then(function(res){
-        alert(res);
-      }) 
-      .catch(function(err){
-        alert('Operazione fallita: si è verificato un errore (ERRCODE ' + err.code + ')');
-      });
-    }
-   )
-   .catch(function(err){
-    alert('Operazione fallita: si è verificato un errore (ERRCODE ' + err.code + ')');
-  });
-     
-
 }
 
-function getABI(id){
-  switch(id){
-    case 'FC': 
-      return 'FakeCoin.json';
-  }
-
-}
 
 $(function () {
   //$(window).load(function () {

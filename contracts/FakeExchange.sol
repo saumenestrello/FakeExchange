@@ -61,6 +61,21 @@ contract FakeExchange is Ownable {
         emit TokenAddressChanged(id, "PAY", payAddr);
     }
     
+    function getPayAddr(string memory id) public view onlyOwner returns (address) {
+        require(supportedCoins[id].supported == true, "coin not supported");
+        return supportedCoins[id].payAddress;
+    }
+    
+    function getBankAddr(string memory id) public view onlyOwner returns (address) {
+        require(supportedCoins[id].supported == true, "coin not supported");
+        return supportedCoins[id].bankAddress;
+    }
+    
+    function getTokenAddr(string memory id) public view returns (address) {
+        require(supportedCoins[id].supported == true, "coin not supported");
+        return supportedCoins[id].tokenAddress;
+    }
+    
     function setFee(uint newFee) public onlyOwner {
         fee = newFee;
         emit FeeChanged(newFee);
@@ -70,7 +85,7 @@ contract FakeExchange is Ownable {
         return fee;
     }
     
-    function getPrice(string memory id) internal returns(uint256){
+    function getPrice(string memory id) pure internal returns(uint256){
         return 100;
     }
 
@@ -95,10 +110,17 @@ contract FakeExchange is Ownable {
         emit TokenBought(msg.sender,qty,price);
     }
     
-    function balance () public view onlyOwner returns (uint){
+    function balance() public view returns (uint){
         return address(this).balance;
     }
     
+    function deposit() public payable {
+    }
+    
+    function withdraw(uint256 amount) external onlyOwner {
+        require(amount <= address(this).balance);
+        msg.sender.transfer(amount);
+    } 
     
     receive() external payable {}
     

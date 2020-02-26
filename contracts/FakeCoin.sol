@@ -17,7 +17,7 @@ contract FakeCoin is ERC20{
         _mint(msg.sender, INITIAL_SUPPLY);
     }
     
-    function deposit(uint qty) public {
+    function withdraw(uint qty) public {
         require(msg.sender == owner, "unauthorized address");
         msg.sender.transfer(qty);
     }
