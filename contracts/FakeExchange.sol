@@ -25,6 +25,8 @@ contract FakeExchange is Ownable {
     event TokenAddressChanged(string tokenID, string addressType, address newAddress);
     event TokenDeleted(string tokenID);
     event FeeChanged(uint newValue);
+    event DepositOccurred(uint amount, address from);
+    event WithdrawalOccurred(uint amount, address from);
     
     constructor () public {
         fee = 100;
@@ -115,11 +117,13 @@ contract FakeExchange is Ownable {
     }
     
     function deposit() public payable {
+	emit DepositOccurred(msg.value,msg.sender);
     }
     
     function withdraw(uint256 amount) external onlyOwner {
         require(amount <= address(this).balance);
         msg.sender.transfer(amount);
+	emit WithdrawalOccurred(amount,msg.sender);
     } 
     
     receive() external payable {}

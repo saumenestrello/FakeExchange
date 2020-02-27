@@ -4,9 +4,9 @@
 App = {
   web3Provider: null,
   contracts: {},
-  binstance : null,
+  binstance: null,
   account: '0x0',
-  ethURL : 'http://127.0.0.1:7545',
+  ethURL: 'http://127.0.0.1:7545',
 
   init: function () {
 
@@ -49,7 +49,6 @@ App = {
     web3.eth.getCoinbase(function (err, account) {
       if (err === null) {
         App.account = account;
-       // web3.eth.defaultAccount = account;
         $("#address").attr('value', account);
       }
     });
@@ -70,50 +69,48 @@ App = {
 
   },
 
-  prepareCoinContract : function(){
-    
-    $('#token').on('change', function(e){
-      
+  prepareCoinContract: function () {
+
+    $('#token').on('change', function (e) {
+
       var id = this.value;
 
-      if(App.bInstance != null && id != '-'){
-      App.bInstance.getTokenAddr(id,
-        {
-         from:   App.account  
-        })
-        .then(function(addr){
+      if (App.bInstance != null && id != '-') {
+        App.bInstance.getTokenAddr(id,
+          {
+            from: App.account
+          })
+          .then(function (addr) {
 
-          $.getJSON("ERC20.json", function (token) {
-            
-            App.contracts.Coin = web3.eth.contract(token.abi);
-            App.cInstance = App.contracts.Coin.at(addr);
-            console.log(App.contracts.cInstance);
-            //web3.setProvider(App.web3Provider);
-            return App.contracts.cInstance;
+            $.getJSON("ERC20.json", function (token) {
+
+              App.contracts.Coin = web3.eth.contract(token.abi);
+              App.cInstance = App.contracts.Coin.at(addr);
+              return App.contracts.cInstance;
+            });
+          })
+          .catch(function (err) {
+            alert('Operazione fallita: si è verificato un errore (ERRCODE ' + err.code + ')');
           });
-        })
-        .catch(function(err){
-          alert('Operazione fallita: si è verificato un errore (ERRCODE ' + err.code + ')');
-        });
       }
     });
 
   }
-  
+
 };
 
-function buyToken(){
+function buyToken() {
 
   var id = $('#token').val();
 
-  if(id == "-"){
+  if (id == "-") {
     alert('token not selected!')
     return;
   }
 
   var qty = parseInt($('#qty').val());
 
-  if(qty == "" || parseInt(qty) == 0){
+  if (qty == "" || parseInt(qty) == 0) {
     alert('insert quantity!')
     return;
   } else {
@@ -122,39 +119,39 @@ function buyToken(){
 
   var price = getPrice(id) * qty;
 
-  App.bInstance.buy.sendTransaction(id,qty,
+  App.bInstance.buy.sendTransaction(id, qty,
     {
-     from:   App.account,
-     value: price,
+      from: App.account,
+      value: price,
     })
-    .then(function(res){
-      alert(res);
+    .then(function (res) {
+      clearScreen();
     })
-    .catch(function(err){
+    .catch(function (err) {
       alert('Operazione fallita: si è verificato un errore (ERRCODE ' + err.code + ')');
     })
-;
+    ;
 }
 
-function getPrice(id){
-  switch(id){
+function getPrice(id) {
+  switch (id) {
     case 'FC':
-    return 100;
+      return 100;
   }
 }
 
-function sellToken(){
+function sellToken() {
 
   var id = $('#token').val();
 
-  if(id == "-"){
+  if (id == "-") {
     alert('token not selected!')
     return;
   }
 
   var qty = parseInt($('#qty').val());
 
-  if(qty == "" || parseInt(qty) == 0){
+  if (qty == "" || parseInt(qty) == 0) {
     alert('insert quantity!')
     return;
   } else {
@@ -162,28 +159,33 @@ function sellToken(){
   }
 
   App.cInstance.approve(App.bInstance.address, qty, {
-    from:   App.account,
-   }, 
-   function(res){
-    {
-      var price = getPrice(id) * qty;
+    from: App.account,
+  },
+    function (res) {
+      {
+        var price = getPrice(id) * qty;
 
-      App.bInstance.sell(id,qty,{
-        from:   App.account,
-      })
-        .then(function(res){
-          alert(res);
-        }) 
-        .catch(function(err){
-          alert('Operazione fallita: si è verificato un errore (ERRCODE ' + err.code + ')');
-        });
+        App.bInstance.sell(id, qty, {
+          from: App.account,
+        })
+          .then(function (res) {
+            clearScreen();
+          })
+          .catch(function (err) {
+            alert('Operazione fallita: si è verificato un errore (ERRCODE ' + err.code + ')');
+          });
       }
     })
+}
+
+function clearScreen(){
+  $('#token').val('-');
+  $('#qty').val("");
 }
 
 
 $(function () {
   //$(window).load(function () {
-    App.init();
+  App.init();
   //});
 });
