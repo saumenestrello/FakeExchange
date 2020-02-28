@@ -31,7 +31,11 @@ inside the *scripts* property, otherwise add it. Now you can deploy the webpage 
 ```
 npm run dev
 ```
- 
+## Contract logic
+The logic behind *FakeExchange* contract is the following:
+1. to be supported a token has to be added by exchange's owner, supplying ID, token's contract address, bank address (the address from which the exchange transfers tokens to the users) and pay address (the address to which the exchange transfers users' payments on tokens sales, keeping a small fee)
+2. when a user wants to buy a token, the exchange transfers the token from bankAddress to user address (this implies that the owner of bankAddress has already *allowed* exchange to move some tokens on his behalf) and forwards the payment to payAddress keeping a small fee
+3. when a user wants to sell a token, the exchange transfers the token from user address to his own address (this implies that the user has already *allowed* exchange to move some tokens on his behalf) and pays the user subtracting a small fee from token's value
 
 
 
