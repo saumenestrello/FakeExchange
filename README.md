@@ -16,6 +16,11 @@ To launch the ```develop``` blockchain just open the terminal, move to project b
 ```
 truffle develop
 ```
+### Migrate
+In order to deploy the contracts on the blockchain you have to run truffle migrations. Migrations also take care of all the required initializations (add first token to the exchange, allow exchange to move funds on behalf of token's bankAddress, give exchange some ETH to be able to buy tokens...); just run (from project base directory)
+```
+truffle migrate cli
+```
 ### Deploy the webpage
 To host the webpage you have to install a webserver; the recommended one in this case is ```lite-server```.
 To install ```lite-server``` (assuming you have npm already installed) type the following commands in the terminal:
