@@ -6,7 +6,7 @@ App = {
   contracts: {},
   binstance: null,
   account: '0x0',
-  ethURL: 'http://127.0.0.1:7545',
+  ethURL: 'http://127.0.0.1:9545',
 
   init: function () {
 
@@ -137,6 +137,8 @@ function getPrice(id) {
   switch (id) {
     case 'FC':
       return 100;
+    case 'EC':
+      return 500;
   }
 }
 
